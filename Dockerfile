@@ -1,16 +1,20 @@
-FROM mcr.microsoft.com/playwright/python:v1.42.0-jammy
+FROM mcr.microsoft.com/playwright/python:v1.58.0-jammy
 
+# Set working directory
 WORKDIR /app
 
-# Copy and install requirements
+# Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of your code
+# Install the browser inside the container
+RUN playwright install chromium
+
+# Copy your code
 COPY . .
 
-# Expose the port Northflank will use
+# Expose Northflank port
 EXPOSE 7860
 
-# Start the server
+# Run with uvicorn
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860"]
